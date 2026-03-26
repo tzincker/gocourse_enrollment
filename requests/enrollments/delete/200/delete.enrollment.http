@@ -1,0 +1,5 @@
+# Request users
+
+# @prompt id enrollment id
+
+DELETE http://{{host}}:{{port}}/enrollments/{{id}}

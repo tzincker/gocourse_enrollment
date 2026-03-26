@@ -11,6 +11,9 @@ type (
 	Service interface {
 		Create(ctx context.Context, userId, courseId string) (*domain.Enrollment, error)
 		GetAll(ctx context.Context, filters Filters, offset, limit int) ([]domain.Enrollment, error)
+		Get(ctx context.Context, id string) (*domain.Enrollment, error)
+		Delete(ctx context.Context, id string) error
+		Update(ctx context.Context, id string, status *string) error
 		Count(ctx context.Context, filters Filters) (int64, error)
 	}
 
@@ -62,6 +65,42 @@ func (s service) GetAll(ctx context.Context, filters Filters, offset, limit int)
 	}
 
 	return enrollments, err
+}
+
+func (s service) Get(ctx context.Context, id string) (*domain.Enrollment, error) {
+	log.Println("Get enrollment service")
+
+	enrollment, err := s.repo.Get(ctx, id)
+
+	if err != nil {
+		s.log.Println(err)
+	}
+
+	return enrollment, err
+}
+
+func (s service) Delete(ctx context.Context, id string) error {
+	log.Println("Delete enrolllment service")
+
+	err := s.repo.Delete(ctx, id)
+
+	if err != nil {
+		s.log.Println(err)
+		return err
+	}
+
+	return nil
+}
+
+func (s service) Update(ctx context.Context, id string, status *string) error {
+	log.Println("Update enrolllment service")
+	err := s.repo.Update(ctx, id, status)
+	if err != nil {
+		s.log.Println(err)
+		return err
+	}
+
+	return nil
 }
 
 func (s service) Count(ctx context.Context, filters Filters) (int64, error) {

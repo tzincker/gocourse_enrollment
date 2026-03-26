@@ -3,5 +3,4 @@ SET @@SESSION.SQL_LOG_BIN = 0;
 
 SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '';
 
-
-CREATE DATABASE IF NOT EXISTS `go_course_enrollments`;
+CREATE DATABASE IF NOT EXISTS `go_course_enrollment`;

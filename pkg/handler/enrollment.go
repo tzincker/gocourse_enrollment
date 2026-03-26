@@ -35,6 +35,27 @@ func NewEnrollmentHTTPServer(ctx context.Context, endpoints enrollment.Endpoints
 		opts...,
 	)).Methods("GET")
 
+	router.Handle("/enrollments/{id}", httptransport.NewServer(
+		endpoint.Endpoint(endpoints.Get),
+		decodeGetEnrollment,
+		encodeResponse,
+		opts...,
+	)).Methods("GET")
+
+	router.Handle("/enrollments/{id}", httptransport.NewServer(
+		endpoint.Endpoint(endpoints.Update),
+		decodeUpdateEnrollment,
+		encodeResponse,
+		opts...,
+	)).Methods("PATCH")
+
+	router.Handle("/enrollments/{id}", httptransport.NewServer(
+		endpoint.Endpoint(endpoints.Delete),
+		decodeDeleteEnrollment,
+		encodeResponse,
+		opts...,
+	)).Methods("DELETE")
+
 	return router
 }
 
@@ -58,6 +79,37 @@ func decodeGetAllEnrollments(_ context.Context, r *http.Request) (any, error) {
 		CourseID: v.Get("course_id_id"),
 		Limit:    limit,
 		Page:     page,
+	}
+
+	return req, nil
+}
+
+func decodeGetEnrollment(_ context.Context, r *http.Request) (any, error) {
+	p := mux.Vars(r)
+	req := enrollment.GetReq{
+		ID: p["id"],
+	}
+
+	return req, nil
+}
+
+func decodeUpdateEnrollment(_ context.Context, r *http.Request) (any, error) {
+	p := mux.Vars(r)
+	id := p["id"]
+
+	var req enrollment.UpdateReq
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		return nil, err
+	}
+
+	req.ID = id
+	return req, nil
+}
+
+func decodeDeleteEnrollment(_ context.Context, r *http.Request) (any, error) {
+	p := mux.Vars(r)
+	req := enrollment.DeleteReq{
+		ID: p["id"],
 	}
 
 	return req, nil

@@ -1,0 +1,5 @@
+# Request enrollment
+
+# @prompt id enrollment id
+
+GET http://{{host}}:{{port}}/enrollments/{{id}}

@@ -2,7 +2,6 @@ package enrollment
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/tzincker/gocourse_domain/domain"
@@ -12,6 +11,9 @@ import (
 type Repository interface {
 	Create(ctx context.Context, course *domain.Enrollment) (*domain.Enrollment, error)
 	GetAll(ctx context.Context, filters Filters, offset, limit int) ([]domain.Enrollment, error)
+	Get(ctx context.Context, id string) (*domain.Enrollment, error)
+	Delete(ctx context.Context, id string) error
+	Update(ctx context.Context, id string, status *string) error
 	Count(ctx context.Context, filters Filters) (int64, error)
 }
 
@@ -52,6 +54,68 @@ func (repo *repo) GetAll(ctx context.Context, filters Filters, offset, limit int
 	return enrollment, nil
 }
 
+func (repo *repo) Get(ctx context.Context, id string) (*domain.Enrollment, error) {
+	enrollment := domain.Enrollment{ID: id}
+
+	result := repo.db.WithContext(ctx).First(&enrollment)
+	if result.Error != nil {
+		repo.log.Println(result.Error)
+
+		if result.Error == gorm.ErrRecordNotFound {
+			return nil, &ErrNotFound{EnrollmentId: id}
+		}
+
+		return nil, result.Error
+	}
+	repo.log.Println("enrolllment found with id: ", enrollment.ID)
+	return &enrollment, nil
+}
+
+func (repo *repo) Delete(ctx context.Context, id string) error {
+	enrollment := domain.Enrollment{ID: id}
+
+	result := repo.db.WithContext(ctx).Delete(&enrollment)
+	if result.Error != nil {
+		repo.log.Println(result.Error)
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		repo.log.Printf("enrolllment %s doesn't exists", id)
+		return &ErrNotFound{EnrollmentId: id}
+	}
+
+	repo.log.Println("enrolllment deleted with id: ", enrollment.ID)
+	return nil
+}
+
+func (repo *repo) Update(
+	ctx context.Context,
+	id string,
+	status *string,
+) error {
+
+	values := make(map[string]any)
+
+	if status != nil {
+		values["status"] = status
+	}
+
+	result := repo.db.WithContext(ctx).Model(&domain.Enrollment{}).Where("id = ?", id).Updates(values)
+	if result.Error != nil {
+		repo.log.Println(result.Error)
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		repo.log.Printf("enrolllment %s doesn't exists", id)
+		return &ErrNotFound{EnrollmentId: id}
+	}
+
+	repo.log.Println("enrollment updated with id: ", id)
+	return nil
+}
+
 func (repo *repo) Count(ctx context.Context, filters Filters) (int64, error) {
 	var count int64
 	tx := repo.db.WithContext(ctx).Model(domain.Enrollment{})
@@ -68,12 +132,10 @@ func (repo *repo) Count(ctx context.Context, filters Filters) (int64, error) {
 
 func applyFilters(tx *gorm.DB, filters Filters) *gorm.DB {
 	if filters.UserId != "" {
-		filters.UserId = fmt.Sprintf("%%%s%%", filters.UserId)
 		tx = tx.Where("user_id = ?", filters.UserId)
 	}
 
 	if filters.CourseId != "" {
-		filters.CourseId = fmt.Sprintf("%s", filters.CourseId)
 		tx = tx.Where("course_id = ?", filters.CourseId)
 	}
 	return tx

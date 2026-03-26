@@ -1,0 +1,9 @@
+# Request users
+
+# @prompt id enrollment id
+
+PATCH http://{{host}}:{{port}}/enrollments/{{id}}
+
+{
+    "status" : "A"
+}
