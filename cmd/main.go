@@ -7,6 +7,8 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
+	courseSdk "github.com/tzincker/go_course_sdk/course"
+	userSdk "github.com/tzincker/go_course_sdk/user"
 	"github.com/tzincker/gocourse_enrollment/internal/enrollment"
 	"github.com/tzincker/gocourse_enrollment/pkg/bootstrap"
 	"github.com/tzincker/gocourse_enrollment/pkg/handler"
@@ -28,9 +30,12 @@ func main() {
 		log.Fatal("paginator limit default is required")
 	}
 
+	userTrans := userSdk.NewHttpClient(os.Getenv("API_USER_URL"), "")
+	courseTrans := courseSdk.NewHttpClient(os.Getenv("API_COURSE_URL"), os.Getenv("API_COURSE_TOKEN"))
+
 	ctx := context.Background()
 	enrollmentRepo := enrollment.NewRepo(log, db)
-	enrollmentSrv := enrollment.NewService(log, enrollmentRepo)
+	enrollmentSrv := enrollment.NewService(log, userTrans, courseTrans, enrollmentRepo)
 
 	h := handler.NewEnrollmentHTTPServer(ctx, enrollment.MakeEndpoints(enrollmentSrv, enrollment.Config{LimPageDef: pagLimDef}))
 

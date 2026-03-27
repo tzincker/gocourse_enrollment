@@ -4,6 +4,8 @@ import (
 	"context"
 	"log"
 
+	courseSdk "github.com/tzincker/go_course_sdk/course"
+	userSdk "github.com/tzincker/go_course_sdk/user"
 	"github.com/tzincker/gocourse_domain/domain"
 )
 
@@ -18,15 +20,19 @@ type (
 	}
 
 	service struct {
-		log  *log.Logger
-		repo Repository
+		log         *log.Logger
+		userTrans   userSdk.Transport
+		courseTrans courseSdk.Transport
+		repo        Repository
 	}
 )
 
-func NewService(log *log.Logger, repo Repository) Service {
+func NewService(log *log.Logger, userTrans userSdk.Transport, courseTrans courseSdk.Transport, repo Repository) Service {
 	return &service{
-		log:  log,
-		repo: repo,
+		log:         log,
+		userTrans:   userTrans,
+		courseTrans: courseTrans,
+		repo:        repo,
 	}
 }
 
@@ -35,16 +41,16 @@ func (s service) Create(ctx context.Context, userID, courseID string) (*domain.E
 	enrollment := domain.Enrollment{
 		UserID:   userID,
 		CourseID: courseID,
-		Status:   "P",
+		Status:   string(domain.Pending),
 	}
 
-	// if _, err := s.userSrv.Get(enrollment.UserID); err != nil {
-	// 	return nil, errors.New("user id does not exist")
-	// }
+	if _, err := s.userTrans.Get(userID); err != nil {
+		return nil, err
+	}
 
-	// if _, err := s.courseSrv.Get(enrollment.CourseID); err != nil {
-	// 	return nil, errors.New("course id does not exist")
-	// }
+	if _, err := s.courseTrans.Get(courseID); err != nil {
+		return nil, err
+	}
 
 	e, err := s.repo.Create(ctx, &enrollment)
 

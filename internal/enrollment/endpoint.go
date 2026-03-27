@@ -5,6 +5,8 @@ import (
 	"errors"
 	"slices"
 
+	courseSdk "github.com/tzincker/go_course_sdk/course"
+	userSdk "github.com/tzincker/go_course_sdk/user"
 	"github.com/tzincker/go_lib_response/response"
 	"github.com/tzincker/gocourse_domain/domain"
 	"github.com/tzincker/gocourse_meta/meta"
@@ -76,6 +78,14 @@ func makeCreateEndpoint(s Service) Controller {
 
 		course, err := s.Create(ctx, req.UserID, req.CourseID)
 		if err != nil {
+			if _, ok := errors.AsType[userSdk.ErrNotFound](err); ok {
+				return nil, response.NotFound(err.Error())
+			}
+
+			if _, ok := errors.AsType[courseSdk.ErrNotFound](err); ok {
+				return nil, response.NotFound(err.Error())
+			}
+
 			return nil, response.InternalServerError(err.Error())
 		}
 

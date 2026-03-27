@@ -2,13 +2,17 @@ module github.com/tzincker/gocourse_enrollment
 
 go 1.26.1
 
-require github.com/tzincker/gocourse_meta v0.0.1
+require (
+	github.com/tzincker/go_course_sdk v0.0.2
+	github.com/tzincker/gocourse_meta v0.0.1
+)
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/go-kit/log v0.2.0 // indirect
 	github.com/go-logfmt/logfmt v0.5.1 // indirect
 	github.com/go-sql-driver/mysql v1.8.1 // indirect
+	github.com/ncostamagna/go_http_client v0.0.3 // indirect
 )
 
 require (
