@@ -81,11 +81,11 @@ func (repo *repo) Delete(ctx context.Context, id string) error {
 	}
 
 	if result.RowsAffected == 0 {
-		repo.log.Printf("enrolllment %s doesn't exists", id)
+		repo.log.Printf("enrollment %s doesn't exists", id)
 		return &ErrNotFound{EnrollmentId: id}
 	}
 
-	repo.log.Println("enrolllment deleted with id: ", enrollment.ID)
+	repo.log.Println("enrollment deleted with id: ", enrollment.ID)
 	return nil
 }
 
