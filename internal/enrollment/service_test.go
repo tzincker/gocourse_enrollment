@@ -8,6 +8,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	courseSdkMock "github.com/tzincker/go_course_sdk/course/mock"
+	userSdkMock "github.com/tzincker/go_course_sdk/user/mock"
 	"github.com/tzincker/gocourse_domain/domain"
 	enrollmentPkg "github.com/tzincker/gocourse_enrollment/internal/enrollment"
 )
@@ -175,7 +177,7 @@ func TestService_Create(t *testing.T) {
 		var wantCounter int = 1
 		var count int = 0
 
-		userSdk := &UserSdkMock{
+		userSdk := &userSdkMock.UserSdkMock{
 			GetMock: func(id string) (*domain.User, error) {
 				count++
 				return nil, errors.New("mock error")
@@ -197,14 +199,14 @@ func TestService_Create(t *testing.T) {
 		var wantCounter int = 2
 		var count int = 0
 
-		userSdk := &UserSdkMock{
+		userSdk := &userSdkMock.UserSdkMock{
 			GetMock: func(id string) (*domain.User, error) {
 				count++
 				return nil, nil
 			},
 		}
 
-		courseSdk := &CourseSdkMock{
+		courseSdk := &courseSdkMock.CourseSdkMock{
 			GetMock: func(id string) (*domain.Course, error) {
 				count++
 				return nil, errors.New("mock error")
@@ -226,14 +228,14 @@ func TestService_Create(t *testing.T) {
 		var wantCounter int = 3
 		var count int = 0
 
-		userSdk := &UserSdkMock{
+		userSdk := &userSdkMock.UserSdkMock{
 			GetMock: func(id string) (*domain.User, error) {
 				count++
 				return nil, nil
 			},
 		}
 
-		courseSdk := &CourseSdkMock{
+		courseSdk := &courseSdkMock.CourseSdkMock{
 			GetMock: func(id string) (*domain.Course, error) {
 				count++
 				return nil, nil
@@ -267,14 +269,14 @@ func TestService_Create(t *testing.T) {
 		var wantCounter int = 3
 		var count int = 0
 
-		userSdk := &UserSdkMock{
+		userSdk := &userSdkMock.UserSdkMock{
 			GetMock: func(id string) (*domain.User, error) {
 				count++
 				return nil, nil
 			},
 		}
 
-		courseSdk := &CourseSdkMock{
+		courseSdk := &courseSdkMock.CourseSdkMock{
 			GetMock: func(id string) (*domain.Course, error) {
 				count++
 				return nil, nil

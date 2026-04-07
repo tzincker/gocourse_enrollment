@@ -45,19 +45,3 @@ func (m *mockRepository) Count(ctx context.Context, filters enrollmentPkg.Filter
 	c, err := m.CountMock(ctx, filters)
 	return c, err
 }
-
-type UserSdkMock struct {
-	GetMock func(id string) (*domain.User, error)
-}
-
-func (m *UserSdkMock) Get(id string) (*domain.User, error) {
-	return m.GetMock(id)
-}
-
-type CourseSdkMock struct {
-	GetMock func(id string) (*domain.Course, error)
-}
-
-func (m *CourseSdkMock) Get(id string) (*domain.Course, error) {
-	return m.GetMock(id)
-}

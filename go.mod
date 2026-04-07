@@ -5,7 +5,7 @@ go 1.26.1
 require (
 	github.com/gin-gonic/gin v1.12.0
 	github.com/stretchr/testify v1.11.1
-	github.com/tzincker/go_course_sdk v0.0.3
+	github.com/tzincker/go_course_sdk v0.0.4
 	github.com/tzincker/gocourse_meta v0.0.1
 )
 
