@@ -57,9 +57,9 @@
 				
 				<option value="file0">github.com/tzincker/gocourse_enrollment/cmd/main.go (0.0%)</option>
 				
-				<option value="file1">github.com/tzincker/gocourse_enrollment/internal/enrollment/endpoint.go (0.0%)</option>
+				<option value="file1">github.com/tzincker/gocourse_enrollment/internal/enrollment/endpoint.go (75.4%)</option>
 				
-				<option value="file2">github.com/tzincker/gocourse_enrollment/internal/enrollment/error.go (0.0%)</option>
+				<option value="file2">github.com/tzincker/gocourse_enrollment/internal/enrollment/error.go (33.3%)</option>
 				
 				<option value="file3">github.com/tzincker/gocourse_enrollment/internal/enrollment/repository.go (0.0%)</option>
 				
@@ -214,7 +214,7 @@ type (
         }
 )
 
-func MakeEndpoints(s Service, config Config) Endpoints <span class="cov0" title="0">{
+func MakeEndpoints(s Service, config Config) Endpoints <span class="cov8" title="1">{
         return Endpoints{
                 Create: makeCreateEndpoint(s),
                 Get:    makeGetEndpoint(s),
@@ -224,38 +224,38 @@ func MakeEndpoints(s Service, config Config) Endpoints <span class="cov0" title=
         }
 }</span>
 
-func makeCreateEndpoint(s Service) Controller <span class="cov0" title="0">{
-        return func(ctx context.Context, request any) (any, error) </span><span class="cov0" title="0">{
+func makeCreateEndpoint(s Service) Controller <span class="cov8" title="1">{
+        return func(ctx context.Context, request any) (any, error) </span><span class="cov8" title="1">{
 
                 req := request.(CreateReq)
 
-                if req.UserID == "" </span><span class="cov0" title="0">{
+                if req.UserID == "" </span><span class="cov8" title="1">{
                         return nil, response.BadRequest(ErrUserIDRequired.Error())
                 }</span>
 
-                <span class="cov0" title="0">if req.CourseID == "" </span><span class="cov0" title="0">{
+                <span class="cov8" title="1">if req.CourseID == "" </span><span class="cov8" title="1">{
                         return nil, response.BadRequest(ErrCourseIDRequired.Error())
                 }</span>
 
-                <span class="cov0" title="0">course, err := s.Create(ctx, req.UserID, req.CourseID)
-                if err != nil </span><span class="cov0" title="0">{
-                        if _, ok := errors.AsType[userSdk.ErrNotFound](err); ok </span><span class="cov0" title="0">{
+                <span class="cov8" title="1">course, err := s.Create(ctx, req.UserID, req.CourseID)
+                if err != nil </span><span class="cov8" title="1">{
+                        if _, ok := errors.AsType[userSdk.ErrNotFound](err); ok </span><span class="cov8" title="1">{
                                 return nil, response.NotFound(err.Error())
                         }</span>
 
-                        <span class="cov0" title="0">if _, ok := errors.AsType[courseSdk.ErrNotFound](err); ok </span><span class="cov0" title="0">{
+                        <span class="cov8" title="1">if _, ok := errors.AsType[courseSdk.ErrNotFound](err); ok </span><span class="cov8" title="1">{
                                 return nil, response.NotFound(err.Error())
                         }</span>
 
-                        <span class="cov0" title="0">return nil, response.InternalServerError(err.Error())</span>
+                        <span class="cov8" title="1">return nil, response.InternalServerError(err.Error())</span>
                 }
 
-                <span class="cov0" title="0">return response.Created("success", course, nil), nil</span>
+                <span class="cov8" title="1">return response.Created("success", course, nil), nil</span>
         }
 }
 
-func makeGetAllEndpoint(s Service, config Config) Controller <span class="cov0" title="0">{
-        return func(ctx context.Context, request any) (any, error) </span><span class="cov0" title="0">{
+func makeGetAllEndpoint(s Service, config Config) Controller <span class="cov8" title="1">{
+        return func(ctx context.Context, request any) (any, error) </span><span class="cov8" title="1">{
                 req := request.(GetAllReq)
                 filters := Filters{
                         UserId:   req.UserID,
@@ -263,25 +263,25 @@ func makeGetAllEndpoint(s Service, config Config) Controller <span class="cov0" 
                 }
 
                 count, err := s.Count(ctx, filters)
-                if err != nil </span><span class="cov0" title="0">{
+                if err != nil </span><span class="cov8" title="1">{
                         return nil, response.InternalServerError(err.Error())
                 }</span>
 
-                <span class="cov0" title="0">meta, err := meta.New(req.Page, req.Limit, count, config.LimPageDef)
-                if err != nil </span><span class="cov0" title="0">{
+                <span class="cov8" title="1">meta, err := meta.New(req.Page, req.Limit, count, config.LimPageDef)
+                if err != nil </span><span class="cov8" title="1">{
                         return nil, response.InternalServerError(err.Error())
                 }</span>
 
-                <span class="cov0" title="0">courses, err := s.GetAll(ctx, filters, meta.Offset(), meta.Limit())
-                if err != nil </span><span class="cov0" title="0">{
+                <span class="cov8" title="1">courses, err := s.GetAll(ctx, filters, meta.Offset(), meta.Limit())
+                if err != nil </span><span class="cov8" title="1">{
                         return nil, response.InternalServerError(err.Error())
                 }</span>
 
-                <span class="cov0" title="0">return response.OK("success", courses, meta), nil</span>
+                <span class="cov8" title="1">return response.OK("success", courses, meta), nil</span>
         }
 }
 
-func makeGetEndpoint(s Service) Controller <span class="cov0" title="0">{
+func makeGetEndpoint(s Service) Controller <span class="cov8" title="1">{
         return func(ctx context.Context, request any) (any, error) </span><span class="cov0" title="0">{
                 req := request.(GetReq)
 
@@ -297,41 +297,41 @@ func makeGetEndpoint(s Service) Controller <span class="cov0" title="0">{
         }
 }
 
-func makeUpdateEndpoint(s Service) Controller <span class="cov0" title="0">{
-        return func(ctx context.Context, request any) (any, error) </span><span class="cov0" title="0">{
+func makeUpdateEndpoint(s Service) Controller <span class="cov8" title="1">{
+        return func(ctx context.Context, request any) (any, error) </span><span class="cov8" title="1">{
 
                 req := request.(UpdateReq)
 
-                if req.Status != nil &amp;&amp; *req.Status == "" </span><span class="cov0" title="0">{
+                if req.Status != nil &amp;&amp; *req.Status == "" </span><span class="cov8" title="1">{
                         return nil, response.BadRequest(ErrStatusRequired.Error())
                 }</span>
 
-                <span class="cov0" title="0">validStatuses := []string{
+                <span class="cov8" title="1">validStatuses := []string{
                         string(domain.Pending),
                         string(domain.Active),
                         string(domain.Studying),
                         string(domain.Inactive),
                 }
 
-                if !slices.Contains(validStatuses, *req.Status) </span><span class="cov0" title="0">{
+                if !slices.Contains(validStatuses, *req.Status) </span><span class="cov8" title="1">{
                         return nil, response.BadRequest(ErrStatusNotValid.Error())
                 }</span>
 
-                <span class="cov0" title="0">err := s.Update(ctx, req.ID, req.Status)
+                <span class="cov8" title="1">err := s.Update(ctx, req.ID, req.Status)
 
-                if err != nil </span><span class="cov0" title="0">{
-                        if _, ok := errors.AsType[*ErrNotFound](err); ok </span><span class="cov0" title="0">{
+                if err != nil </span><span class="cov8" title="1">{
+                        if _, ok := errors.AsType[*ErrNotFound](err); ok </span><span class="cov8" title="1">{
                                 return nil, response.NotFound(err.Error())
                         }</span>
 
-                        <span class="cov0" title="0">return nil, response.InternalServerError(err.Error())</span>
+                        <span class="cov8" title="1">return nil, response.InternalServerError(err.Error())</span>
                 }
 
-                <span class="cov0" title="0">return response.OK("success", nil, nil), nil</span>
+                <span class="cov8" title="1">return response.OK("success", nil, nil), nil</span>
         }
 }
 
-func makeDeleteEndpoint(s Service) Controller <span class="cov0" title="0">{
+func makeDeleteEndpoint(s Service) Controller <span class="cov8" title="1">{
         return func(ctx context.Context, request any) (any, error) </span><span class="cov0" title="0">{
                 req := request.(DeleteReq)
                 err := s.Delete(ctx, req.ID)
@@ -365,7 +365,7 @@ type ErrNotFound struct {
         EnrollmentId string
 }
 
-func (e *ErrNotFound) Error() string <span class="cov0" title="0">{
+func (e *ErrNotFound) Error() string <span class="cov8" title="1">{
         return fmt.Sprintf("enrolllment with id: '%s' doesn't exist", e.EnrollmentId)
 }</span>
 
@@ -737,21 +737,21 @@ func NewEnrollmentHTTPServer(ctx context.Context, endpoints enrollment.Endpoints
                 opts...,
         )))
 
-        router.GET("/enrollments/{id}", ginDecode, gin.WrapH(httptransport.NewServer(
+        router.GET("/enrollments/:id", ginDecode, gin.WrapH(httptransport.NewServer(
                 endpoint.Endpoint(endpoints.Get),
                 decodeGetEnrollment,
                 encodeResponse,
                 opts...,
         )))
 
-        router.PATCH("/enrollments/{id}", ginDecode, gin.WrapH(httptransport.NewServer(
+        router.PATCH("/enrollments/:id", ginDecode, gin.WrapH(httptransport.NewServer(
                 endpoint.Endpoint(endpoints.Update),
                 decodeUpdateEnrollment,
                 encodeResponse,
                 opts...,
         )))
 
-        router.DELETE("/enrollments/{id}", ginDecode, gin.WrapH(httptransport.NewServer(
+        router.DELETE("/enrollments/:id", ginDecode, gin.WrapH(httptransport.NewServer(
                 endpoint.Endpoint(endpoints.Delete),
                 decodeDeleteEnrollment,
                 encodeResponse,

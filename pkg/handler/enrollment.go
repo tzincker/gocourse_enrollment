@@ -35,21 +35,21 @@ func NewEnrollmentHTTPServer(ctx context.Context, endpoints enrollment.Endpoints
 		opts...,
 	)))
 
-	router.GET("/enrollments/{id}", ginDecode, gin.WrapH(httptransport.NewServer(
+	router.GET("/enrollments/:id", ginDecode, gin.WrapH(httptransport.NewServer(
 		endpoint.Endpoint(endpoints.Get),
 		decodeGetEnrollment,
 		encodeResponse,
 		opts...,
 	)))
 
-	router.PATCH("/enrollments/{id}", ginDecode, gin.WrapH(httptransport.NewServer(
+	router.PATCH("/enrollments/:id", ginDecode, gin.WrapH(httptransport.NewServer(
 		endpoint.Endpoint(endpoints.Update),
 		decodeUpdateEnrollment,
 		encodeResponse,
 		opts...,
 	)))
 
-	router.DELETE("/enrollments/{id}", ginDecode, gin.WrapH(httptransport.NewServer(
+	router.DELETE("/enrollments/:id", ginDecode, gin.WrapH(httptransport.NewServer(
 		endpoint.Endpoint(endpoints.Delete),
 		decodeDeleteEnrollment,
 		encodeResponse,
